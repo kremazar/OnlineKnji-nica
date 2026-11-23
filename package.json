@@ -1,0 +1,12 @@
+{
+  "name": "arhiva-app",
+  "version": "1.3.0",
+  "description": "Pregled digitalizirane građe po kategorijama, naslovu, godini i broju",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

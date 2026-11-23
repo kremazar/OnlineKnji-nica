@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitalni arhiv – Sveučilišna knjižnica u Puli</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2b4c7e;
+            --accent: #b0823e;
+            --accent-hover: #966c2e;
+            --bg-body: #f4f6f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Zaglavlje */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #102442 100%);
+            color: #ffffff;
+            padding: 2.5rem 1.5rem;
+            border-bottom: 4px solid var(--accent);
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .institution-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #e2c08d;
+            margin-bottom: 0.5rem;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.4rem;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: 0.98rem;
+            max-width: 650px;
+        }
+
+        /* Glavni kontejner */
+        main {
+            max-width: 1100px;
+            width: 100%;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-label span {
+            background: var(--primary);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        /* Grid za 4 kategorije */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+        }
+
+        .category-card.active {
+            border-color: var(--primary);
+            background: #f8fafc;
+            box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.12);
+        }
+
+        .category-card.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent);
+        }
+
+        .cat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(26, 54, 93, 0.08);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .category-card.active .cat-icon {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .cat-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .cat-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Panel za odabir publikacije, godine i broja */
+        .browser-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .browser-panel.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 1.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .panel-header h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 1.25rem;
+            align-items: end;
+        }
+
+        @media (max-width: 850px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-main);
+            background-color: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.9rem center;
+            padding-right: 2.5rem;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+        }
+
+        select:disabled {
+            background-color: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-open {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.78rem 1.6rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            height: 45px;
+            white-space: nowrap;
+        }
+
+        .btn-open:hover:not(:disabled) {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-open:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .btn-open:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .empty-notice {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            background: #ffffff;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="institution-tag">Sveučilište Jurja Dobrile u Puli • Sveučilišna knjižnica u Puli</div>
+        <h1>Digitalni arhiv publikacija</h1>
+        <p>Pretraživanje i pregled digitaliziranih novina, časopisa, godišnjaka i ostale arhivske građe.</p>
+    </div>
+</header>
+
+<main>
+    <div class="section-label"><span>1</span> Odaberite vrstu građe</div>
+    <div id="categoriesContainer" class="categories-grid"></div>
+
+    <div id="browserPanel" class="browser-panel">
+        <div class="panel-header">
+            <h2 id="selectedCategoryTitle">Odabrana kategorija</h2>
+        </div>
+
+        <div id="emptyNotice" class="empty-notice" style="display: none;">
+            Trenutno nema učitanih publikacija u ovoj kategoriji. Dodajte mape s publikacijama u direktorij arhivske građe.
+        </div>
+
+        <div id="controlsGrid" class="controls-grid">
+            <div class="field-group">
+                <label for="pubSelect">1. Naslov publikacije</label>
+                <select id="pubSelect"></select>
+            </div>
+
+            <div class="field-group">
+                <label for="yearSelect">2. Godina izdanja</label>
+                <select id="yearSelect" disabled></select>
+            </div>
+
+            <div class="field-group">
+                <label for="issueSelect">3. Broj / Izdanje</label>
+                <select id="issueSelect" disabled></select>
+            </div>
+
+            <button id="openPdfBtn" class="btn-open" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                Otvori PDF
+            </button>
+        </div>
+    </div>
+</main>
+
+<footer>
+    Digitalni arhiv • Sustav za pregled digitalizirane građe
+</footer>
+
+<script>
+    let archiveData = [];
+    let currentCategory = null;
+
+    const icons = {
+        'NOVINE': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>',
+        'ČASOPISI': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+        'GODIŠNJACI': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+        'OSTALA GRAĐA': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'
+    };
+
+    const categoriesContainer = document.getElementById('categoriesContainer');
+    const browserPanel = document.getElementById('browserPanel');
+    const selectedCategoryTitle = document.getElementById('selectedCategoryTitle');
+    const emptyNotice = document.getElementById('emptyNotice');
+    const controlsGrid = document.getElementById('controlsGrid');
+    const pubSelect = document.getElementById('pubSelect');
+    const yearSelect = document.getElementById('yearSelect');
+    const issueSelect = document.getElementById('issueSelect');
+    const openPdfBtn = document.getElementById('openPdfBtn');
+
+    async function init() {
+        try {
+            const res = await fetch('/api/archive');
+            archiveData = await res.json();
+            renderCategories();
+        } catch (err) {
+            console.error('Greška pri dohvaćanju arhive:', err);
+        }
+    }
+
+    function renderCategories() {
+        categoriesContainer.innerHTML = '';
+        archiveData.forEach((catObj, index) => {
+            const card = document.createElement('div');
+            card.className = 'category-card';
+            const count = catObj.publications.length;
+            const countText = count === 1 ? '1 naslov' : `${count} naslova`;
+            const iconSvg = icons[catObj.category.toUpperCase()] || icons['OSTALA GRAĐA'];
+
+            card.innerHTML = `
+                <div>
+                    <div class="cat-icon">${iconSvg}</div>
+                    <div class="cat-title">${catObj.category}</div>
+                </div>
+                <div class="cat-count">${countText}</div>
+            `;
+
+            card.addEventListener('click', () => selectCategory(catObj, card));
+            categoriesContainer.appendChild(card);
+
+            // Automatski otvori prvu kategoriju koja ima sadržaj (ili prvu općenito)
+            if (index === 0) {
+                selectCategory(catObj, card);
+            }
+        });
+    }
+
+    function selectCategory(catObj, cardElement) {
+        document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+        cardElement.classList.add('active');
+
+        currentCategory = catObj;
+        selectedCategoryTitle.textContent = catObj.category;
+        browserPanel.classList.add('visible');
+
+        if (catObj.publications.length === 0) {
+            emptyNotice.style.display = 'block';
+            controlsGrid.style.display = 'none';
+            return;
+        }
+
+        emptyNotice.style.display = 'none';
+        controlsGrid.style.display = 'grid';
+
+        pubSelect.innerHTML = '';
+        catObj.publications.forEach(pub => {
+            const opt = document.createElement('option');
+            opt.value = pub.name;
+            opt.textContent = pub.name;
+            pubSelect.appendChild(opt);
+        });
+
+        handlePublicationChange();
+    }
+
+    function handlePublicationChange() {
+        const selectedPubName = pubSelect.value;
+        const pubObj = currentCategory.publications.find(p => p.name === selectedPubName);
+
+        yearSelect.innerHTML = '';
+        issueSelect.innerHTML = '';
+        issueSelect.disabled = true;
+        openPdfBtn.disabled = true;
+
+        if (!pubObj || pubObj.years.length === 0) {
+            yearSelect.disabled = true;
+            return;
+        }
+
+        yearSelect.disabled = false;
+        pubObj.years.forEach(year => {
+            const opt = document.createElement('option');
+            opt.value = year;
+            opt.textContent = year;
+            yearSelect.appendChild(opt);
+        });
+
+        handleYearChange();
+    }
+
+    async function handleYearChange() {
+        const pubName = pubSelect.value;
+        const year = yearSelect.value;
+
+        issueSelect.innerHTML = '<option>Učitavanje...</option>';
+        issueSelect.disabled = true;
+        openPdfBtn.disabled = true;
+
+        try {
+            const url = `/api/archive/${encodeURIComponent(currentCategory.category)}/${encodeURIComponent(pubName)}/${encodeURIComponent(year)}`;
+            const res = await fetch(url);
+            const files = await res.json();
+
+            issueSelect.innerHTML = '';
+            if (files.length === 0) {
+                issueSelect.innerHTML = '<option>Nema brojeva</option>';
+                return;
+            }
+
+            files.forEach(file => {
+                const opt = document.createElement('option');
+                opt.value = file.url;
+                opt.textContent = file.name;
+                issueSelect.appendChild(opt);
+            });
+
+            issueSelect.disabled = false;
+            openPdfBtn.disabled = false;
+        } catch (err) {
+            console.error(err);
+            issueSelect.innerHTML = '<option>Greška</option>';
+        }
+    }
+
+    pubSelect.addEventListener('change', handlePublicationChange);
+    yearSelect.addEventListener('change', handleYearChange);
+    openPdfBtn.addEventListener('click', () => {
+        if (issueSelect.value) {
+            window.open(issueSelect.value, '_blank');
+        }
+    });
+
+    init();
+</script>
+</body>
+</html>

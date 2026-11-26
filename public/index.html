@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digitalni arhiv – Sveučilišna knjižnica u Puli</title>
+    <title>INO - Istarske novine online | Sveučilišna knjižnica u Puli</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1a365d;
-            --primary-light: #2b4c7e;
+            --primary-dark: #102442;
             --accent: #b0823e;
             --accent-hover: #966c2e;
             --bg-body: #f4f6f9;
@@ -23,34 +23,99 @@
             --radius: 12px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
-            line-height: 1.6;
+            line-height: 1.65;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Zaglavlje */
+        /* Zaglavlje i Navigacija (kao na ino.com.hr) */
         header {
-            background: linear-gradient(135deg, var(--primary) 0%, #102442 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: #ffffff;
-            padding: 2.5rem 1.5rem;
             border-bottom: 4px solid var(--accent);
             box-shadow: var(--shadow-md);
         }
 
-        .header-inner {
-            max-width: 1100px;
+        .top-bar {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(16, 36, 66, 0.6);
+        }
+
+        .top-bar-inner {
+            max-width: 1140px;
             margin: 0 auto;
+            padding: 0.9rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand-logo {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .brand-logo span {
+            background: var(--accent);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            letter-spacing: 0.08em;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 500;
+            padding: 0.5rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        nav button:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        nav button.active {
+            color: #ffffff;
+            background: var(--accent);
+            font-weight: 600;
+        }
+
+        .hero-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
         }
 
         .institution-tag {
@@ -63,59 +128,158 @@
             margin-bottom: 0.5rem;
         }
 
-        header h1 {
+        .hero-inner h1 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: 2.1rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            letter-spacing: -0.01em;
             margin-bottom: 0.4rem;
         }
 
-        header p {
+        .hero-inner p {
             color: #cbd5e1;
-            font-size: 0.98rem;
-            max-width: 650px;
+            font-size: 1rem;
+            max-width: 720px;
         }
 
-        /* Glavni kontejner */
+        /* Glavni sadržaj i sekcije */
         main {
-            max-width: 1100px;
+            max-width: 1140px;
             width: 100%;
             margin: 2.5rem auto;
             padding: 0 1.5rem;
             flex: 1;
         }
 
-        .section-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+        .view-section {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 780px;
+            margin: 0 auto 2.2rem auto;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.85rem;
+            color: var(--primary);
+            margin-bottom: 0.6rem;
+        }
+
+        .section-header hr {
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            border: none;
+            margin: 0.8rem auto 1rem auto;
+        }
+
+        .section-header p {
             color: var(--text-muted);
-            margin-bottom: 1rem;
+            font-size: 0.98rem;
+        }
+
+        /* 4 uvodna bloka (O projektu, Građa, Pretraživanje, Kontakt) */
+        .info-boxes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.6rem;
+            box-shadow: var(--shadow-sm);
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .section-label span {
+        .info-box:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-box h3 {
+            color: var(--primary);
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-outline {
+            align-self: flex-start;
+            background: transparent;
+            color: var(--accent);
+            border: 1.5px solid var(--accent);
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        /* Statistika traka (kao na ino.com.hr) */
+        .stats-bar {
             background: var(--primary);
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
+            color: #ffffff;
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            margin-bottom: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
         }
 
-        /* Grid za 4 kategorije */
+        .stat-number {
+            display: block;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e2c08d;
+        }
+
+        .stat-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #cbd5e1;
+        }
+
+        /* Grid za 4 kategorije građe */
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 1.25rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
         .category-card {
@@ -130,7 +294,6 @@
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            overflow: hidden;
         }
 
         .category-card:hover {
@@ -145,16 +308,6 @@
             box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.12);
         }
 
-        .category-card.active::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--accent);
-        }
-
         .cat-icon {
             width: 42px;
             height: 42px;
@@ -165,7 +318,6 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 1rem;
-            transition: all 0.2s ease;
         }
 
         .category-card.active .cat-icon {
@@ -177,7 +329,7 @@
             font-size: 1.05rem;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.25rem;
         }
 
         .cat-count {
@@ -185,30 +337,20 @@
             color: var(--text-muted);
         }
 
-        /* Panel za odabir publikacije, godine i broja */
+        /* Panel za preglednik + Popis naslova + Povijesni opis publikacije */
         .browser-panel {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 2rem;
             box-shadow: var(--shadow-md);
-            display: none;
-            animation: fadeIn 0.25s ease;
-        }
-
-        .browser-panel.visible {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-bottom: 2.5rem;
         }
 
         .panel-header {
             border-bottom: 1px solid var(--border);
             padding-bottom: 1rem;
-            margin-bottom: 1.75rem;
+            margin-bottom: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -217,8 +359,80 @@
         }
 
         .panel-header h2 {
-            font-size: 1.3rem;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.45rem;
             color: var(--primary);
+        }
+
+        /* Popis publikacija u 2 stupca (kao na ino.com.hr/digitalizirana-gradja/novine) */
+        .pub-directory {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 0.6rem 2rem;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .pub-directory-item {
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 0.93rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .pub-directory-item:hover {
+            background: rgba(176, 130, 62, 0.12);
+            color: var(--accent-hover);
+        }
+
+        .pub-directory-item.selected {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* Povijesni tekst odabrane publikacije (kao na /digitalizirana-gradja/info/...) */
+        .pub-info-box {
+            background: #fffdf9;
+            border: 1px solid #e9decb;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .pub-info-box h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .pub-info-box p {
+            font-size: 0.94rem;
+            color: #334155;
+            margin-bottom: 0.85rem;
+            text-align: justify;
+        }
+
+        .pub-info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Kontrole za odabir */
+        .controls-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
         }
 
         .controls-grid {
@@ -229,9 +443,7 @@
         }
 
         @media (max-width: 850px) {
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
+            .controls-grid { grid-template-columns: 1fr; }
         }
 
         .field-group label {
@@ -254,7 +466,6 @@
             border: 1.5px solid #cbd5e1;
             border-radius: 8px;
             cursor: pointer;
-            transition: border-color 0.2s, box-shadow 0.2s;
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -284,7 +495,6 @@
             font-weight: 600;
             font-family: inherit;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -293,18 +503,31 @@
             white-space: nowrap;
         }
 
-        .btn-open:hover:not(:disabled) {
-            background-color: var(--accent-hover);
+        .btn-open:hover:not(:disabled) { background-color: var(--accent-hover); }
+        .btn-open:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+
+        /* Tekstualne stranice (O projektu, Novosti, Kontakt) */
+        .article-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2.2rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
         }
 
-        .btn-open:active:not(:disabled) {
-            transform: scale(0.98);
+        .article-card h3 {
+            color: var(--primary);
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.35rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.6rem;
         }
 
-        .btn-open:disabled {
-            background-color: #cbd5e1;
-            cursor: not-allowed;
-        }
+        .article-card h3:first-child { margin-top: 0; }
+        .article-card p { margin-bottom: 1rem; color: #334155; }
+        .article-card ul { margin-left: 1.5rem; margin-bottom: 1rem; color: #334155; }
+        .article-card li { margin-bottom: 0.4rem; }
 
         .empty-notice {
             background: #f8fafc;
@@ -313,79 +536,337 @@
             padding: 1.5rem;
             text-align: center;
             color: var(--text-muted);
-            font-size: 0.95rem;
         }
 
         footer {
+            background: var(--primary-dark);
+            color: #cbd5e1;
             text-align: center;
-            padding: 1.5rem;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--border);
-            background: #ffffff;
+            padding: 2rem 1.5rem;
+            font-size: 0.88rem;
+            border-top: 4px solid var(--accent);
             margin-top: auto;
         }
+
+        footer a { color: #e2c08d; text-decoration: none; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-inner">
+    <div class="top-bar">
+        <div class="top-bar-inner">
+            <a href="#" class="brand-logo" onclick="switchTab('pocetna'); return false;">
+                <span>INO</span> Istarske Novine Online
+            </a>
+            <nav>
+                <ul>
+                    <li><button class="nav-btn active" data-tab="pocetna" onclick="switchTab('pocetna')">Početna</button></li>
+                    <li><button class="nav-btn" data-tab="projekt" onclick="switchTab('projekt')">O projektu</button></li>
+                    <li><button class="nav-btn" data-tab="gradja" onclick="switchTab('gradja')">Digitalizirana građa</button></li>
+                    <li><button class="nav-btn" data-tab="novosti" onclick="switchTab('novosti')">Novosti</button></li>
+                    <li><button class="nav-btn" data-tab="kontakt" onclick="switchTab('kontakt')">Kontakt</button></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="hero-inner">
         <div class="institution-tag">Sveučilište Jurja Dobrile u Puli • Sveučilišna knjižnica u Puli</div>
         <h1>Prva Istarska virtualna čitaonica</h1>
-        <p>Pretraživanje i pregled digitaliziranih novina, časopisa, godišnjaka i ostale arhivske građe.</p>
+        <p>digitaliziranih starih Istarskih novina i publikacija (19. i prva polovina 20. stoljeća)</p>
     </div>
 </header>
 
 <main>
-    <div class="section-label"><span>1</span> Odaberite vrstu građe</div>
-    <div id="categoriesContainer" class="categories-grid"></div>
-
-    <div id="browserPanel" class="browser-panel">
-        <div class="panel-header">
-            <h2 id="selectedCategoryTitle">Odabrana kategorija</h2>
+    <!-- 1. POČETNA -->
+    <section id="tab-pocetna" class="view-section active">
+        <div class="section-header">
+            <h2>Dobrodošli na stranice projekta INO</h2>
+            <hr>
+            <p>
+                Na stranicama koje slijede predstavit ćemo Vam projekt Istarske novine online (INO), kojim su predstavljene digitalizirane stare novine koje su izlazile u Istri u drugoj polovini 19. st. i u prvoj polovini 20. stoljeća.
+            </p>
         </div>
 
-        <div id="emptyNotice" class="empty-notice" style="display: none;">
-            Trenutno nema učitanih publikacija u ovoj kategoriji. Dodajte mape s publikacijama u direktorij arhivske građe.
+        <div class="info-boxes-grid">
+            <div class="info-box">
+                <div>
+                    <h3>O projektu</h3>
+                    <p>Projektom "Istarske novine online (INO)" ostvarena je virtualna čitaonica starih novina i publikacija...</p>
+                </div>
+                <button class="btn-outline" onclick="switchTab('projekt')">Više informacija</button>
+            </div>
+            <div class="info-box">
+                <div>
+                    <h3>Digitalizirana građa</h3>
+                    <p>U sklopu projekta INO digitalizirana je stara građa: novine, časopisi, godišnjaci i ostala građa...</p>
+                </div>
+                <button class="btn-outline" onclick="switchTab('gradja')">Više informacija</button>
+            </div>
+            <div class="info-box">
+                <div>
+                    <h3>Pretraživanje</h3>
+                    <p>Pretraživanje digitalizirane građe moguće je prema kategorijama, izdanjima, godinama i brojevima...</p>
+                </div>
+                <button class="btn-outline" onclick="switchTab('gradja')">Otvori čitaonicu</button>
+            </div>
+            <div class="info-box">
+                <div>
+                    <h3>Kontaktirajte nas</h3>
+                    <p>Kontakt s Vama nam je od izuzetne važnosti, te ukoliko imate bilo kakvih pitanja, slobodno nam se obratite...</p>
+                </div>
+                <button class="btn-outline" onclick="switchTab('kontakt')">Više informacija</button>
+            </div>
         </div>
 
-        <div id="controlsGrid" class="controls-grid">
-            <div class="field-group">
-                <label for="pubSelect">1. Naslov publikacije</label>
-                <select id="pubSelect"></select>
+        <div class="stats-bar">
+            <div>
+                <span class="stat-number" id="statPubs">578</span>
+                <span class="stat-title">Digitaliziranih izdanja / naslova</span>
             </div>
-
-            <div class="field-group">
-                <label for="yearSelect">2. Godina izdanja</label>
-                <select id="yearSelect" disabled></select>
+            <div>
+                <span class="stat-number" id="statIssues">103.578</span>
+                <span class="stat-title">Dostupnih PDF brojeva / dokumenata</span>
             </div>
-
-            <div class="field-group">
-                <label for="issueSelect">3. Broj / Izdanje</label>
-                <select id="issueSelect" disabled></select>
+            <div>
+                <span class="stat-number">4</span>
+                <span class="stat-title">Kategorije arhivske građe</span>
             </div>
-
-            <button id="openPdfBtn" class="btn-open" disabled>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                </svg>
-                Otvori PDF
-            </button>
+            <div>
+                <span class="stat-number">1846.–1963.</span>
+                <span class="stat-title">Vremenski raspon građe</span>
+            </div>
         </div>
-    </div>
+
+        <div class="section-header">
+            <h2>Digitalizirana građa</h2>
+            <hr>
+            <p>Odaberite ciljanu kategoriju digitalizirane građe za pregled naslova, povijesnih bilješki i PDF izdanja</p>
+        </div>
+
+        <div id="homeCategoriesContainer" class="categories-grid"></div>
+    </section>
+
+    <!-- 2. DIGITALIZIRANA GRAĐA (Čitaonica + Opisi novina) -->
+    <section id="tab-gradja" class="view-section">
+        <div class="section-header">
+            <h2>Digitalizirana građa</h2>
+            <hr>
+            <p>
+                Odaberite vrstu građe, zatim željeni naslov kako biste pročitali povijesni pregled publikacije te odabrali godinu i broj izdanja u PDF formatu.
+            </p>
+        </div>
+
+        <div id="gradjaCategoriesContainer" class="categories-grid"></div>
+
+        <div id="browserPanel" class="browser-panel">
+            <div class="panel-header">
+                <h2 id="selectedCategoryTitle">Digitalizirana građa - NOVINE</h2>
+            </div>
+
+            <div id="emptyNotice" class="empty-notice" style="display: none;">
+                Trenutno nema učitanih publikacija u ovoj kategoriji. Dodajte mape s publikacijama u direktorij arhivske građe.
+            </div>
+
+            <div id="categoryContentArea">
+                <!-- Popis svih publikacija u odabranoj kategoriji (kao na ino.com.hr) -->
+                <div id="pubDirectory" class="pub-directory"></div>
+
+                <!-- Povijesni opis odabrane publikacije (kao na /digitalizirana-gradja/info/...) -->
+            <div id="pubInfoBox" style="display: none; margin-top: 20px; padding: 16px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa;">
+    <h3 id="pubInfoTitle" style="margin-top: 0;"></h3>
+    <div id="pubInfoContent"></div>
+</div>
+
+                <!-- Odabir publikacije, godine i broja -->
+                <div class="controls-title">Pregledavanje digitalizirane građe unutar sustava</div>
+                <div class="controls-grid">
+                    <div class="field-group">
+                        <label for="pubSelect">1. Odaberite izdanje</label>
+                        <select id="pubSelect"></select>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="yearSelect">2. Odaberite godinu</label>
+                        <select id="yearSelect" disabled></select>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="issueSelect">3. Odaberite broj</label>
+                        <select id="issueSelect" disabled></select>
+                    </div>
+
+                    <button id="openPdfBtn" class="btn-open" disabled>
+                        Prikaži izdanje (PDF)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. O PROJEKTU -->
+    <section id="tab-projekt" class="view-section">
+        <div class="section-header">
+            <h2>Projekt – Istarske novine online (INO)</h2>
+            <hr>
+            <p>Virtualna čitaonica starih novina Sveučilišne knjižnice u Puli</p>
+        </div>
+        <div class="article-card">
+            <h3>O projektu</h3>
+            <p>
+                Projektom <strong>"Istarske novine online / Istrian Newspapers Online" (INO)</strong> ostvarena je virtualna čitaonica starih novina koje su izlazile u Istri u drugoj polovini 19. stoljeća i u prvoj polovini 20. stoljeća. Putem ove aplikacije korisnici mogu istraživati povijest Istre na novinama objavljivanim na hrvatskom, talijanskom i njemačkom jeziku.
+            </p>
+            <h3>Zašto smo pokrenuli projekt i digitalizirali građu?</h3>
+            <p>
+                Novinski fond Zavičajne zbirke <em>Histrica</em> Sveučilišne knjižnice u Puli sadrži više od 420 naslova novina koje su izlazile u Istri od 1808. do danas. Zbog rijetkosti starih istarskih novina i ugroženosti izvornika te potrebe da ih se trajno zaštiti, Knjižnica je 2005. godine započela sustavnu digitalizaciju mikrofilmova i izvornika.
+            </p>
+            <h3>Ciljevi projekta INO</h3>
+            <ul>
+                <li>Zaštita vrijednih i rijetkih izvornika starih istarskih novina i časopisa od daljnjeg propadanja uslijed čestog korištenja.</li>
+                <li>Omogućavanje brzog i jednostavnog pristupa digitaliziranoj baštini znanstvenicima, studentima, učenicima i široj javnosti.</li>
+                <li>Predstavljanje multikulturalne tiskane baštine Istre na hrvatskom, talijanskom i njemačkom jeziku.</li>
+            </ul>
+            <h3>Način pregledavanja i uvjeti korištenja</h3>
+            <p>
+                Građa je organizirana po vrsti (Novine, Časopisi, Godišnjaci, Ostala građa), naslovu publikacije, godini izlaženja te pojedinom broju u PDF formatu. Digitalizirana građa namijenjena je za osobnu, znanstvenu i obrazovnu uporabu uz navođenje izvora (Sveučilišna knjižnica u Puli – Projekt INO).
+            </p>
+        </div>
+    </section>
+
+    <!-- 4. NOVOSTI -->
+    <section id="tab-novosti" class="view-section">
+        <div class="section-header">
+            <h2>Novosti</h2>
+            <hr>
+            <p>Obavijesti o novim digitaliziranim izdanjima i nadogradnjama sustava</p>
+        </div>
+        <div class="article-card">
+            <h3>Lokalni digitalni arhiv INO</h3>
+            <p>
+                Sustav je nadograđen novim sučeljem za brzo lokalno pregledavanje svih preuzetih novina, časopisa, godišnjaka i ostale arhivske građe uz pripadajuće povijesne opise svakog izdanja.
+            </p>
+            <h3>Nova web lokacija projekta INO</h3>
+            <p>
+                Redizajnirana i modernizirana web lokacija projekta INO nadopunjena je digitaliziranim izdanjima istarskih novina i časopisa iz fonda Zavičajne zbirke Histrica Sveučilišne knjižnice u Puli.
+            </p>
+        </div>
+    </section>
+
+    <!-- 5. KONTAKT -->
+    <section id="tab-kontakt" class="view-section">
+        <div class="section-header">
+            <h2>Kontakt</h2>
+            <hr>
+            <p>Sveučilište Jurja Dobrile u Puli – Sveučilišna knjižnica u Puli</p>
+        </div>
+        <div class="article-card">
+            <h3>Kontakt podaci</h3>
+            <p><strong>Ustanova:</strong> Sveučilište Jurja Dobrile u Puli – Sveučilišna knjižnica u Puli</p>
+            <p><strong>Adresa:</strong> Herkulov prolaz 1, 52100 Pula, Hrvatska</p>
+            <p><strong>Mrežne stranice:</strong> <a href="https://www.skpu.hr/" target="_blank">www.skpu.hr</a> | <a href="https://www.ino.com.hr/" target="_blank">www.ino.com.hr</a></p>
+            <p>Ukoliko imate bilo kakvih pitanja, nejasnoća ili prijedloga suradnje vezanih uz digitaliziranu građu, slobodno se obratite djelatnicima Sveučilišne knjižnice u Puli.</p>
+        </div>
+    </section>
 </main>
 
 <footer>
-    Digitalni arhiv • Sustav za pregled digitalizirane građe
+    Copyright © <a href="http://www.skpu.hr/" target="_blank">Sveučilište Jurja Dobrile u Puli - Sveučilišna knjižnica</a> • Projekt INO – Istarske novine online
 </footer>
 
 <script>
     let archiveData = [];
     let currentCategory = null;
+
+    // Hardkodirani opisi publikacija (dodaj nove ključeve po istom obrascu)
+    const fallbackDescriptions = {
+        'illustrierte': {
+            title: 'Illustrierte Österreichische Riviera-Zeitung (1904.-1906.)',
+            descriptionHtml: `
+                <p>Illustrierte Österreichische Riviera-Zeitung (Ilustrirane novine Austrijske rivijere) su prve istarske novine koje su služile turističkoj promidžbi istočnojadranske obale (imale su podnaslov: "Organ za lječilišne i privredne interese Dalmacije, Istre i Trsta"). Izlazile su na njemačkom jeziku, najprije u Puli (od 15. 4. 1904. do ožujka 1905.), a nakon toga u Opatiji (do rujna 1906.). Izdavač i glavni urednik bio je Friedrich J. Weiss, a odgovorni urednici Ferdinand Štěpánek i Alfred Hartmann. Komisijski nakladnik bila je pulska Knjižara F. W. Schrinner (“Schrinnersche Buchhandlung”). Izlazile su uz novčanu potporu države.</p>
+                <p>Izlazile su tjedno, odnosno – češće – dvaput mjesečno kao dvobroj, u formatu: 23 x 30 cm. Imale su razmjerno visoku nakladu od 2.500 primjeraka te su, unatoč visokoj cijeni, bile najtiražnija njemačkojezična periodična publikacija u Istri. U Puli su tiskane u tiskari Schrinner, a zatim u Opatiji u tiskari "V. Tomičić i dr."</p>
+                <p>Glavna svrha lista bilo je informiranje potencijalnih gostiju iz Monarhije i inozemstva o prirodnim, kulturnim i turističko-lječilišnim sadržajima Istre i Dalmacije. Objavljivani su prilozi o povijesti, privredi, etnografiji, turističko-lječilišnim mogućnostima i prirodnim ljepotama Istre i Dalmacije, te o kulturi i sportu, uz brojne reklamne oglase. Posebna rubrika bila je posvećena književnosti, čemu je namijenjen veći prostor, zbog čega ove novine možemo odrediti kao turističko-literarne.</p>
+                <p><strong>Literatura:</strong> Dobrić, Bruno, Novine i časopisi na njemačkom jeziku u Istri (1871. - 1918.) : Pula, Opatija, Brijuni, Pula : Istarski ogranak Društva hrvatskih književnika, 2016.</p>
+            `
+        },
+        'brioni': {
+            title: 'Brioni Insel-Zeitung (1910.-1914.)',
+            descriptionHtml: `
+                <p>Brioni Insel-Zeitung izlazio je na otočju Brijuni (Brioni) kao tjednik (od sredine veljače do kraja listopada), odnosno tijekom ostalog dijela godine kao mjesečnik. Izdavao ga je austrijski industrijalac Paul Kupelwieser (Beč, 1843.-1919.), koji je od 1893. bio vlasnik tog otočja.</p>
+                <p>List je izlazio od 6. 2. 1910. do 8. 3. 1914., na njemačkom jeziku. Uredništvo je bilo na otoku Veli Brijun, a izdavač lista bio je „Gutsdirektion Brioni“ (Uprava posjeda na Brijunima). Urednici su bili Otto Buchbaum, a od 31. 1. 1913. S. O. Fangor.</p>
+                <p>Tiskan je u 800-1000 primjeraka u pulskoj tiskari „Adolf Fischer e C.“, a od 1913. kod Herrmanstorfera u Trstu. Imao je 12 stranica, a sadržavao je brojne fotografije i druge ilustracije.</p>
+                <p><em>mr. sc. Bruno Dobrić</em></p>
+            `
+        },
+        'istarskarijec': {
+            title: 'Istarska riječ (1923.-1929.)',
+            descriptionHtml: `
+                <p>List istarskih Hrvata i Slovenaca pod talijanskom vlašću, koji je pod imenom "Istarska riječ : glasilo za narodne i gospodarske interese" izlazio u Trstu kao tjednik od 2. kolovoza 1923. do 20. lipnja 1929. godine. Zamijenio je ugasli "Pučki prijatelj" te je s "Istarskom riječi" nastavljeno izlaženje novina na hrvatskom jeziku. List su osnovali i pokrenuli predstavnici hrvatske i slovenske manjine u Julijskoj krajini u okviru političkog društva "Edinost", i imao je za cilj prvenstveno zaštitu prava nacionalnih manjina. "Istarska riječ" se zalagala za prosvjetno-kulturni i ekonomski razvoj istarskog sela. Pisala je o političkim pitanjima, a stalne su rubrike bile posvećene gospodarstvu, prosvjeti i kulturi, događajima u Istri i u svijetu. Veliki prostor je bio posvećen književnim prilozima (romani i priče u nastavcima, poezija), a objavljivani su i tekstovi o značajnim osobama iz istarske i hrvatske povijesti. List je, također, pružao seljacima pravne i praktične savjete. Prvi je urednik bio Ivan Zuccon, nakon kojega list uređuje Ernest Radetić (od veljače 1925.). Od 1926. odgovorni je urednik bio Milan Banić, a zatim od kolovoza 1926. do gašenja 1929. Ivan Marija Čok. Za vrijeme talijanske fašističke vlasti novine su često bile zaplijenjivane, a u lipnju 1929. vlasti su zabranile izlaženje "Istarske riječi".</p>
+                <p><strong>Literatura:</strong></p>
+                <p>1. Istarska enciklopedija, Zagreb : Leksikografski zavod Miroslav Krleža, 2005.</p>
+                <p>2. Radetić, Ernest, Istra pod Italijom : 1918.-1943., Zagreb : [s. n.], 1944.</p>
+            `
+        },
+        'lazione': {
+            title: "L'Azione (1919.-1922.)",
+            descriptionHtml: `
+                <p>Dnevne novine "L'Azione : quotidiano della Venezia Giulia" izlazile su u Puli od 17. travnja 1919. do 28. listopada 1922. godine. Pokrenute su nakon dolaska talijanskih vlasti u Pulu, kao novine koje su zastupale umjerene talijanske nacionalističke i liberalne krugove. Prvi je urednik bio Giovanni Timeus, a od 1921. Pio Riego Gambini. List je izlazio svakodnevno, osim ponedjeljkom, na četiri stranice. U njemu su se pratili politički događaji u Italiji, Europi i svijetu, ali je veliki prostor bio posvećen lokalnim i regionalnim temama, osobito gospodarskoj i društvenoj situaciji u Puli i Istri nakon Prvoga svjetskog rata (problem nezaposlenosti, prenamjena pulskog arsenala, obnova gospodarstva, školstvo, kultura, sport). Novine su imale i bogat kulturni i književni podlistak. Dolaskom fašista na vlast u Italiji u listopadu 1922., list prestaje izlaziti.</p>
+                <p><strong>Literatura:</strong></p>
+                <p>1. Istarska enciklopedija, Zagreb : Leksikografski zavod Miroslav Krleža, 2005.</p>
+                <p>2. Gombač, Boris, La stampa quotidiana e periodica italiana in Istria (1918-1945), u: Atti, sv. 23, Rovinj-Trst, 1993.</p>
+            `
+        },
+        'hrvatski_list': {
+            title: 'Hrvatski list (1915.-1918.)',
+            descriptionHtml: `
+                <p>Prvi hrvatski dnevnik u Istri, "Hrvatski list", izlazio je u Puli od 1. srpnja 1915. do 11. studenoga 1918. godine. Pokrenut je nakon što je u svibnju 1915. zbog ratnih prilika prestala izlaziti "Naša sloga", a pokrenuli su ga članovi Narodnog doma u Puli i vodstvo Hrvatsko-slovenske narodne stranke. Prvi glavni urednik bio je Josip Grašić, a odgovorni urednik Ante Juretić; kasnije su list uređivali i Matko Laginja, Vjekoslav Spinčić te drugi istaknuti istarski narodnjaci. Tiskan je u tiskari "Josip Krmpotić" u Puli. Izlazio je svakodnevno, u početku na četiri, a kasnije zbog ratne nestašice papira na dvije stranice. Unatoč strogoj ratnoj cenzuri, "Hrvatski list" je imao golemo značenje za informiranje hrvatskog stanovništva u Istri tijekom Prvoga svjetskog rata, donoseći vijesti s bojišta, iz Monarhije i iz Istre, te prateći rad Jugoslavenskog kluba u bečkom parlamentu i zbivanja oko raspada Austro-Ugarske Monarhije. U zadnjim danima izlaženja, u listopadu i studenome 1918., detaljno je pratio osnivanje Narodnog vijeća SHS i predaju austrougarske flote u Puli, sve dok talijanske okupacijske vlasti nisu zabranile njegovo izlaženje.</p>
+                <p><strong>Literatura:</strong></p>
+                <p>1. Istarska enciklopedija, Zagreb : Leksikografski zavod Miroslav Krleža, 2005.</p>
+                <p>2. Šetić, Nevio, Istra između tradicionalnog i modernog, Pazin : Naša sloga, 1995.</p>
+            `
+        },
+        'arena': {
+            title: "L'Arena di Pola (1945.-1947.)",
+            descriptionHtml: `
+                <p>Dnevni list "L'Arena di Pola" počeo je izlaziti u Puli 29. srpnja 1945. godine, u vrijeme savezničke anglo-američke vojne uprave (Zona A Julijske krajine), kao glasilo talijanskog stanovništva u Puli koje se zalagalo za ostanak grada u sastavu Italije. Pokrenuli su ga članovi pulskog Komiteta nacionalnog oslobođenja (CLN), a prvi glavni urednik bio je Guido Miglia. List je izlazio svakodnevno, donoseći političke komentare, vijesti iz grada i okolice, kulturne i sportske priloge te intenzivno prateći mirovne pregovore o sudbini Istre i Pule. Nakon potpisivanja Mirovnog ugovora u Parizu u veljači 1947., kojim je Pula pripala Jugoslaviji, list je pratio masovni odlazak (egzodus) talijanskog stanovništva iz Pule. Posljednji broj u Puli izašao je 13. svibnja 1947. godine, nakon čega je redakcija preseljena u Goricu, a potom u Trst, gdje "L'Arena di Pola" nastavlja izlaziti kao glasilo istarskih esula.</p>
+                <p><strong>Literatura:</strong></p>
+                <p>1. Istarska enciklopedija, Zagreb : Leksikografski zavod Miroslav Krleža, 2005.</p>
+            `
+        },
+        'istra': {
+            title: 'Istra (1929.-1940.)',
+            descriptionHtml: `
+                <p>Tjednik "Istra : glasilo hrvatskih i slovenskih emigranata iz Julijske krajine" izlazio je u Zagrebu od 1. veljače 1929. do 20. rujna 1940. godine. Pokrenulo ga je društvo istarskih, tršćanskih, goričkih i riječkih emigranata u Kraljevini Jugoslaviji kako bi okupljalo izbjeglice iz Julijske krajine, čuvalo njihovu nacionalnu svijest i informiralo domaću i međunarodnu javnost o teškom položaju Hrvata i Slovenaca pod talijanskom fašističkom vlašću. Među glavnim urednicima i suradnicima bili su istaknuti istarski intelektualci i političari u emigraciji, poput Ernesta Radetića, Ivana Marije Čoka, Mate Balote (Mije Mirkovića), Ive Mihovilovića i drugih. Osim političkih tekstova i vijesti iz Istre, list je objavljivao bogate priloge o istarskoj povijesti, književnosti, folkloru i gospodarstvu. Zbog vanjskopolitičkih pritisaka Italije na Kraljevinu Jugoslaviju, vlasti su ga 1940. godine zabranile.</p>
+                <p><strong>Literatura:</strong></p>
+                <p>1. Istarska enciklopedija, Zagreb : Leksikografski zavod Miroslav Krleža, 2005.</p>
+                <p>2. Radetić, Ernest, Istra pod Italijom : 1918.-1943., Zagreb : [s. n.], 1944.</p>
+            `
+        },
+        'corriere': {
+            title: 'Corriere Istriano (1925.-1945.)',
+            descriptionHtml: `
+                <p>Dnevne novine "Corriere Istriano" izlazile su u Puli od 1. siječnja 1925. do 28. travnja 1945. godine kao službeno glasilo Fašističke stranke (PNF) za Istarsku pokrajinu. Nastale su spajanjem ranijih lokalnih fašističkih i nacionalističkih listova te su tijekom dvadeset godina bile jedini dnevni list u Puli i glavni instrument fašističke propagande i talijanizacije Istre. Unatoč snažnoj ideološkoj obojenosti, "Corriere Istriano" predstavlja važan povijesni izvor za proučavanje svakodnevnog života, komunalnog razvoja, gospodarstva, urbanizma, kulture i sporta u Puli i Istri u međuratnom razdoblju i tijekom Drugoga svjetskog rata. List je prestao izlaziti neposredno prije oslobođenja Pule u svibnju 1945. godine.</p>
+                <p><strong>Literatura:</strong></p>
+                <p>1. Istarska enciklopedija, Zagreb : Leksikografski zavod Miroslav Krleža, 2005.</p>
+            `
+        },
+        'polaer': {
+            title: 'Polaer Tagblatt (1905.-1918.)',
+            descriptionHtml: `
+                <p>"Polaer Tagblatt" bio je najznačajniji i najdugovječniji dnevni list na njemačkom jeziku u Puli i Istri. Izlazio je od 1. siječnja 1905. do 31. listopada 1918. godine, kao nastavak ranijeg lista "Polaer Morgenblatt" (1904.). Budući da je Pula bila glavna ratna luka Austro-Ugarske Monarhije s brojnim časnicima, mornarima, državnim službenicima i radnicima njemačkoga govornog područja, list je imao široku čitateljsku publiku. Izdavač i tiskar bio je Josip Krmpotić, a među urednicima se isticao Oskar Schalek. "Polaer Tagblatt" je donosio opširne vijesti iz Monarhije i svijeta, lokalnu kroniku, izvještaje o radu ratne mornarice i Arsenala, kulturne i kazališne recenzije, oglase te feljtone. Tijekom Prvoga svjetskog rata bio je glavni izvor ratnih vijesti za njemačkojezično stanovništvo Pule, a prestao je izlaziti raspadom Austro-Ugarske Monarhije krajem listopada 1918. godine.</p>
+                <p><strong>Literatura:</strong></p>
+                <p>1. Dobrić, Bruno, Novine i časopisi na njemačkom jeziku u Istri (1871. - 1918.) : Pula, Opatija, Brijuni, Pula : Istarski ogranak Društva hrvatskih književnika, 2016.</p>
+            `
+        },
+        'nasa_sloga': {
+            title: 'Naša sloga (1870.-1915.)',
+            descriptionHtml: `
+                <p>"Naša sloga" bile su prve hrvatske novine u Istri i temeljno glasilo hrvatskoga narodnog preporoda na istarskom poluotoku. Pokrenute su u Trstu 1. lipnja 1870. godine na poticaj biskupa Jurja Dobrile, Antuna Karabaića, Mate Bastijana i drugih istarskih preporoditelja, s podnaslovom "Poučni, gospodarski i politički list". U Trstu je list izlazio do 1899. godine (najprije polumjesečno, zatim tjedno), a od 1900. do svibnja 1915. godine izlazio je u Puli (tjedno, a povremeno i dvaput tjedno), gdje ga je tiskala i izdavala Hrvatska tiskara Josipa Krmpotića. Među najpoznatijim urednicima bili su Lovro Testen, Matko Mandić, Antun Kalac, Matko Laginja i drugi. "Naša sloga" je odigrala presudnu ulogu u buđenju nacionalne svijesti, borbi za ravnopravnost hrvatskog jezika u školama, uredima i Istarskom saboru, te u prosvjećivanju i gospodarskom uzdizanju istarskog sela. Prestala je izlaziti u svibnju 1915. godine zbog ulaska Italije u Prvi svjetski rat i ratnih ograničenja.</p>
+                <p><strong>Literatura:</strong></p>
+                <p>1. Istarska enciklopedija, Zagreb : Leksikografski zavod Miroslav Krleža, 2005.</p>
+                <p>2. Bratulić, Josip, Naša sloga 1870.-1915., Pazin : Istarsko književno društvo "Juraj Dobrila", 1995.</p>
+            `
+        }
+    };
 
     const icons = {
         'NOVINE': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>',
@@ -394,75 +875,143 @@
         'OSTALA GRAĐA': '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'
     };
 
-    const categoriesContainer = document.getElementById('categoriesContainer');
-    const browserPanel = document.getElementById('browserPanel');
-    const selectedCategoryTitle = document.getElementById('selectedCategoryTitle');
-    const emptyNotice = document.getElementById('emptyNotice');
-    const controlsGrid = document.getElementById('controlsGrid');
     const pubSelect = document.getElementById('pubSelect');
     const yearSelect = document.getElementById('yearSelect');
     const issueSelect = document.getElementById('issueSelect');
     const openPdfBtn = document.getElementById('openPdfBtn');
 
+    function getFallbackInfo(pubName) {
+        if (!pubName) return null;
+        const normalize = str => str
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]/g, '');
+
+        const normPub = normalize(pubName);
+        const keys = Object.keys(fallbackDescriptions).sort((a, b) => b.length - a.length);
+
+        for (const key of keys) {
+            if (normPub.includes(normalize(key))) {
+                return fallbackDescriptions[key];
+            }
+        }
+        return null;
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     async function init() {
         try {
             const res = await fetch('/api/archive');
-            archiveData = await res.json();
-            renderCategories();
+            const data = await res.json();
+            archiveData = data.categories || data;
+
+            if (data.stats && data.stats.issues > 0) {
+                document.getElementById('statPubs').textContent = data.stats.publications;
+                document.getElementById('statIssues').textContent = data.stats.issues.toLocaleString('hr-HR');
+            }
+
+            renderCategoryCards();
         } catch (err) {
             console.error('Greška pri dohvaćanju arhive:', err);
         }
     }
 
-    function renderCategories() {
-        categoriesContainer.innerHTML = '';
+    function renderCategoryCards() {
+        const homeContainer = document.getElementById('homeCategoriesContainer');
+        const gradjaContainer = document.getElementById('gradjaCategoriesContainer');
+        homeContainer.innerHTML = '';
+        gradjaContainer.innerHTML = '';
+
         archiveData.forEach((catObj, index) => {
-            const card = document.createElement('div');
-            card.className = 'category-card';
             const count = catObj.publications.length;
             const countText = count === 1 ? '1 naslov' : `${count} naslova`;
             const iconSvg = icons[catObj.category.toUpperCase()] || icons['OSTALA GRAĐA'];
 
-            card.innerHTML = `
+            const homeCard = document.createElement('div');
+            homeCard.className = 'category-card';
+            homeCard.innerHTML = `
                 <div>
                     <div class="cat-icon">${iconSvg}</div>
                     <div class="cat-title">${catObj.category}</div>
                 </div>
                 <div class="cat-count">${countText}</div>
             `;
+            homeCard.addEventListener('click', () => {
+                switchTab('gradja');
+                selectCategory(catObj);
+            });
+            homeContainer.appendChild(homeCard);
 
-            card.addEventListener('click', () => selectCategory(catObj, card));
-            categoriesContainer.appendChild(card);
+            const gradjaCard = document.createElement('div');
+            gradjaCard.className = 'category-card';
+            gradjaCard.dataset.cat = catObj.category;
+            gradjaCard.innerHTML = `
+                <div>
+                    <div class="cat-icon">${iconSvg}</div>
+                    <div class="cat-title">${catObj.category}</div>
+                </div>
+                <div class="cat-count">${countText}</div>
+            `;
+            gradjaCard.addEventListener('click', () => selectCategory(catObj));
+            gradjaContainer.appendChild(gradjaCard);
 
-            // Automatski otvori prvu kategoriju koja ima sadržaj (ili prvu općenito)
             if (index === 0) {
-                selectCategory(catObj, card);
+                selectCategory(catObj);
             }
         });
     }
 
-    function selectCategory(catObj, cardElement) {
-        document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
-        cardElement.classList.add('active');
+    function selectCategory(catObj) {
+        document.querySelectorAll('#gradjaCategoriesContainer .category-card').forEach(c => {
+            c.classList.toggle('active', c.dataset.cat === catObj.category);
+        });
 
         currentCategory = catObj;
-        selectedCategoryTitle.textContent = catObj.category;
-        browserPanel.classList.add('visible');
+        document.getElementById('selectedCategoryTitle').textContent = `Digitalizirana građa - ${catObj.category}`;
+
+        const emptyNotice = document.getElementById('emptyNotice');
+        const contentArea = document.getElementById('categoryContentArea');
 
         if (catObj.publications.length === 0) {
             emptyNotice.style.display = 'block';
-            controlsGrid.style.display = 'none';
+            contentArea.style.display = 'none';
             return;
         }
 
         emptyNotice.style.display = 'none';
-        controlsGrid.style.display = 'grid';
+        contentArea.style.display = 'block';
 
+        const pubDirectory = document.getElementById('pubDirectory');
+        pubDirectory.innerHTML = '';
         pubSelect.innerHTML = '';
+
         catObj.publications.forEach(pub => {
+            const infoData = pub.info || getFallbackInfo(pub.name);
+            const displayTitle = (infoData && infoData.title) ? infoData.title : pub.name;
+
+            const dirItem = document.createElement('div');
+            dirItem.className = 'pub-directory-item';
+            dirItem.dataset.pub = pub.name;
+            dirItem.innerHTML = `<span>•</span> ${displayTitle}`;
+            dirItem.addEventListener('click', () => {
+                pubSelect.value = pub.name;
+                handlePublicationChange();
+            });
+            pubDirectory.appendChild(dirItem);
+
             const opt = document.createElement('option');
             opt.value = pub.name;
-            opt.textContent = pub.name;
+            opt.textContent = displayTitle;
             pubSelect.appendChild(opt);
         });
 
@@ -470,29 +1019,54 @@
     }
 
     function handlePublicationChange() {
-        const selectedPubName = pubSelect.value;
-        const pubObj = currentCategory.publications.find(p => p.name === selectedPubName);
+    const selectedPubName = pubSelect.value;
+    const pubObj = currentCategory.publications.find(p => p.name === selectedPubName);
 
-        yearSelect.innerHTML = '';
-        issueSelect.innerHTML = '';
-        issueSelect.disabled = true;
-        openPdfBtn.disabled = true;
+    document.querySelectorAll('.pub-directory-item').forEach(item => {
+        item.classList.toggle('selected', item.dataset.pub === selectedPubName);
+    });
 
-        if (!pubObj || pubObj.years.length === 0) {
-            yearSelect.disabled = true;
-            return;
+    const infoBox = document.getElementById('pubInfoBox');
+    const infoTitle = document.getElementById('pubInfoTitle');
+    const infoContent = document.getElementById('pubInfoContent');
+
+    // Koristi pubObj.info samo ako stvarno ima descriptionHtml, inače uzmi fallback
+    const infoData = (pubObj && pubObj.info && pubObj.info.descriptionHtml)
+        ? pubObj.info
+        : getFallbackInfo(selectedPubName);
+
+    console.log('Odabrano:', selectedPubName, '| Opis pronađen:', !!infoData);
+
+    if (infoBox && infoTitle && infoContent) {
+        if (infoData && infoData.descriptionHtml) {
+            infoTitle.textContent = infoData.title || selectedPubName;
+            infoContent.innerHTML = infoData.descriptionHtml;
+            infoBox.style.display = 'block';
+        } else {
+            infoBox.style.display = 'none';
         }
-
-        yearSelect.disabled = false;
-        pubObj.years.forEach(year => {
-            const opt = document.createElement('option');
-            opt.value = year;
-            opt.textContent = year;
-            yearSelect.appendChild(opt);
-        });
-
-        handleYearChange();
     }
+
+    yearSelect.innerHTML = '';
+    issueSelect.innerHTML = '';
+    issueSelect.disabled = true;
+    openPdfBtn.disabled = true;
+
+    if (!pubObj || pubObj.years.length === 0) {
+        yearSelect.disabled = true;
+        return;
+    }
+
+    yearSelect.disabled = false;
+    pubObj.years.forEach(year => {
+        const opt = document.createElement('option');
+        opt.value = year;
+        opt.textContent = year;
+        yearSelect.appendChild(opt);
+    });
+
+    handleYearChange();
+}
 
     async function handleYearChange() {
         const pubName = pubSelect.value;

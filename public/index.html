@@ -58,7 +58,9 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
+        .controls-grid.compact {
+            grid-template-columns: 1fr auto;
+        }
         .brand-logo {
             font-family: 'Playfair Display', Georgia, serif;
             font-size: 1.35rem;
@@ -788,15 +790,6 @@
                 <p><strong>Literatura:</strong> Dobrić, Bruno, Novine i časopisi na njemačkom jeziku u Istri (1871. - 1918.) : Pula, Opatija, Brijuni, Pula : Istarski ogranak Društva hrvatskih književnika, 2016.</p>
             `
         },
-        'brioni': {
-            title: 'Brioni Insel-Zeitung (1910.-1914.)',
-            descriptionHtml: `
-                <p>Brioni Insel-Zeitung izlazio je na otočju Brijuni (Brioni) kao tjednik (od sredine veljače do kraja listopada), odnosno tijekom ostalog dijela godine kao mjesečnik. Izdavao ga je austrijski industrijalac Paul Kupelwieser (Beč, 1843.-1919.), koji je od 1893. bio vlasnik tog otočja.</p>
-                <p>List je izlazio od 6. 2. 1910. do 8. 3. 1914., na njemačkom jeziku. Uredništvo je bilo na otoku Veli Brijun, a izdavač lista bio je „Gutsdirektion Brioni“ (Uprava posjeda na Brijunima). Urednici su bili Otto Buchbaum, a od 31. 1. 1913. S. O. Fangor.</p>
-                <p>Tiskan je u 800-1000 primjeraka u pulskoj tiskari „Adolf Fischer e C.“, a od 1913. kod Herrmanstorfera u Trstu. Imao je 12 stranica, a sadržavao je brojne fotografije i druge ilustracije.</p>
-                <p><em>mr. sc. Bruno Dobrić</em></p>
-            `
-        },
         'istarskarijec': {
             title: 'Istarska riječ (1923.-1929.)',
             descriptionHtml: `
@@ -971,7 +964,7 @@
         });
     }
 
-    function selectCategory(catObj) {
+    async function selectCategory(catObj) {
         document.querySelectorAll('#gradjaCategoriesContainer .category-card').forEach(c => {
             c.classList.toggle('active', c.dataset.cat === catObj.category);
         });
@@ -990,6 +983,24 @@
 
         emptyNotice.style.display = 'none';
         contentArea.style.display = 'block';
+
+        const isGodisnjaci = catObj.category.toUpperCase() === 'GODIŠNJACI';
+        const controlsGrid = document.querySelector('.controls-grid');
+        const pubField = pubSelect.closest('.field-group');
+        const yearField = yearSelect.closest('.field-group');
+
+        // Za GODIŠNJAKE sakrij nepotrebne padajuće izbornike i prikaži sve PDF-ove direktno u popisu
+        if (isGodisnjaci) {
+            if (pubField) pubField.style.display = 'none';
+            if (yearField) yearField.style.display = 'none';
+            if (controlsGrid) controlsGrid.classList.add('compact');
+            await renderGodisnjaciList(catObj);
+            return;
+        } else {
+            if (pubField) pubField.style.display = '';
+            if (yearField) yearField.style.display = '';
+            if (controlsGrid) controlsGrid.classList.remove('compact');
+        }
 
         const pubDirectory = document.getElementById('pubDirectory');
         pubDirectory.innerHTML = '';
@@ -1017,6 +1028,92 @@
 
         handlePublicationChange();
     }
+
+    async function renderGodisnjaciList(catObj) {
+        const pubDirectory = document.getElementById('pubDirectory');
+        const infoBox = document.getElementById('pubInfoBox');
+        const infoTitle = document.getElementById('pubInfoTitle');
+        const infoContent = document.getElementById('pubInfoContent');
+
+        pubDirectory.innerHTML = '<div style="color: var(--text-muted); padding: 0.4rem;">Učitavanje godišnjaka...</div>';
+        issueSelect.innerHTML = '';
+        issueSelect.disabled = true;
+        openPdfBtn.disabled = true;
+        if (infoBox) infoBox.style.display = 'none';
+
+        try {
+            let allFiles = [];
+            for (const pub of catObj.publications) {
+                for (const year of pub.years) {
+                    const url = `/api/archive/${encodeURIComponent(catObj.category)}/${encodeURIComponent(pub.name)}/${encodeURIComponent(year)}`;
+                    const res = await fetch(url);
+                    const files = await res.json();
+                    allFiles = allFiles.concat(files);
+                }
+            }
+
+            pubDirectory.innerHTML = '';
+            if (allFiles.length === 0) {
+                pubDirectory.innerHTML = '<div style="color: var(--text-muted); padding: 0.4rem;">Nema dostupnih PDF izdanja.</div>';
+                return;
+            }
+
+            const selectGodisnjak = (file) => {
+                document.querySelectorAll('#pubDirectory .pub-directory-item').forEach(el => {
+                    el.classList.toggle('selected', el.dataset.url === file.url);
+                });
+                issueSelect.value = file.url;
+                openPdfBtn.disabled = false;
+
+                // Ako postoji opis za odabrani godišnjak u fallbackDescriptions, prikaži ga
+                const infoData = getFallbackInfo(file.name);
+                if (infoBox && infoTitle && infoContent) {
+                    if (infoData && infoData.descriptionHtml) {
+                        infoTitle.textContent = infoData.title || file.name;
+                        infoContent.innerHTML = infoData.descriptionHtml;
+                        infoBox.style.display = 'block';
+                    } else {
+                        infoBox.style.display = 'none';
+                    }
+                }
+            };
+
+            allFiles.forEach((file, idx) => {
+                const dirItem = document.createElement('div');
+                dirItem.className = 'pub-directory-item' + (idx === 0 ? ' selected' : '');
+                dirItem.dataset.url = file.url;
+                dirItem.innerHTML = `<span>•</span> ${file.name}`;
+                dirItem.addEventListener('click', () => selectGodisnjak(file));
+                pubDirectory.appendChild(dirItem);
+
+                const opt = document.createElement('option');
+                opt.value = file.url;
+                opt.textContent = file.name;
+                issueSelect.appendChild(opt);
+            });
+
+            issueSelect.disabled = false;
+            selectGodisnjak(allFiles[0]);
+        } catch (err) {
+            console.error('Greška pri učitavanju godišnjaka:', err);
+            pubDirectory.innerHTML = '<div style="color: #dc2626; padding: 0.4rem;">Greška pri učitavanju popisa godišnjaka.</div>';
+        }
+    }
+
+    pubSelect.addEventListener('change', handlePublicationChange);
+    yearSelect.addEventListener('change', handleYearChange);
+    issueSelect.addEventListener('change', () => {
+        if (currentCategory && currentCategory.category.toUpperCase() === 'GODIŠNJACI') {
+            document.querySelectorAll('#pubDirectory .pub-directory-item').forEach(el => {
+                el.classList.toggle('selected', el.dataset.url === issueSelect.value);
+            });
+        }
+    });
+    openPdfBtn.addEventListener('click', () => {
+        if (issueSelect.value) {
+            window.open(issueSelect.value, '_blank');
+        }
+    });
 
     function handlePublicationChange() {
     const selectedPubName = pubSelect.value;

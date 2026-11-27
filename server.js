@@ -161,7 +161,7 @@ app.get("/api/archive/:category/:publication/:year", (req, res) => {
           : `/files/${encodeURIComponent(category)}/${encodeURIComponent(publication)}/${encodeURIComponent(year)}/${encodeURIComponent(dirent.name)}`;
 
         return {
-          name: dirent.name.replace(/(\.+pdf)+$/i, "").replace(/\.[^/.]+$/, ""),
+          name: dirent.name.replace(/(\.+pdf)+$/i, ""),
           url: url,
         };
       })

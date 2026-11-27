@@ -3,231 +3,179 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-// Putanje do mapa (po potrebi promijeni naziv mape s PDF-ovima)
-const PUBLIC_DIR = path.join(__dirname, "public");
-const ARCHIVE_DIR = path.join(__dirname, "Ino_skinuto");
-const DESCRIPTIONS_PATH = path.join(__dirname, "descriptions.json");
+const DATA_DIR = path.join(__dirname, "Ino_skinuto");
+const DESC_FILE = path.join(__dirname, "descriptions.json");
 
-// Zadani redoslijed glavnih kategorija
 const DEFAULT_CATEGORIES = ["NOVINE", "ČASOPISI", "GODIŠNJACI", "OSTALA GRAĐA"];
+const FLAT_CATEGORIES = ["GODIŠNJACI"];
+const FLAT_PLACEHOLDER = "Svi brojevi";
 
-// Posluživanje statičkih datoteka (index.html, style.css, script.js) i PDF arhive
-app.use(express.static(PUBLIC_DIR));
-app.use("/files", express.static(ARCHIVE_DIR));
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/files", express.static(DATA_DIR));
 
-// Prirodno sortiranje naziva (npr. br. 2 prije br. 10)
-const naturalSort = (a, b) =>
-  a.localeCompare(b, "hr", { numeric: true, sensitivity: "base" });
-
-// Sigurno učitavanje descriptions.json ako postoji na disku
+// Učitaj opise publikacija ako postoje
 function loadDescriptions() {
   try {
-    if (fs.existsSync(DESCRIPTIONS_PATH)) {
-      const raw = fs.readFileSync(DESCRIPTIONS_PATH, "utf8");
-      return JSON.parse(raw);
+    if (fs.existsSync(DESC_FILE)) {
+      return JSON.parse(fs.readFileSync(DESC_FILE, "utf8"));
     }
-  } catch (err) {
-    console.warn("Upozorenje: descriptions.json nije učitan:", err.message);
+  } catch (e) {
+    console.error("Greška pri čitanju descriptions.json:", e);
   }
   return {};
 }
 
-// Pronalaženje opisa iz descriptions.json prema nazivu mape
-function findDescriptionForPub(pubName, descriptions) {
-  if (!pubName || !descriptions) return null;
+// Pronađi odgovarajući opis po nazivu mape (ignorira velika/mala slova i zagrade)
+function findDescription(pubName, descriptions) {
+  const cleanPub = pubName.toLowerCase().trim();
+  if (descriptions[cleanPub]) return descriptions[cleanPub];
 
-  const normalize = (str) =>
-    str
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]/g, "");
-
-  const normPub = normalize(pubName);
-  const keys = Object.keys(descriptions).sort((a, b) => b.length - a.length);
-
-  for (const key of keys) {
-    if (normPub.includes(normalize(key))) {
-      const entry = descriptions[key];
-      if (
-        entry &&
-        entry.descriptionHtml &&
-        entry.descriptionHtml.trim() !== ""
-      ) {
-        return entry;
-      }
+  for (const key of Object.keys(descriptions)) {
+    const entry = descriptions[key];
+    const cleanTitle = (entry.title || key).toLowerCase();
+    if (cleanTitle.includes(cleanPub) || cleanPub.includes(key.toLowerCase())) {
+      return entry;
     }
   }
   return null;
 }
 
-// Dohvat direktorija ili PDF datoteka
-function getDirectories(dirPath) {
-  if (!fs.existsSync(dirPath)) return [];
-  return fs
-    .readdirSync(dirPath, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort(naturalSort);
-}
-
-function getPdfFiles(dirPath) {
-  if (!fs.existsSync(dirPath)) return [];
-  return fs
-    .readdirSync(dirPath, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && /\.pdf$/i.test(entry.name))
-    .map((entry) => entry.name)
-    .sort(naturalSort);
-}
-
-// API: Pregled svih kategorija, publikacija, godina i statistike
+// API: Dohvati cijelu arhivu + metapodatke i statistiku
 app.get("/api/archive", (req, res) => {
   try {
-    if (!fs.existsSync(ARCHIVE_DIR)) {
-      fs.mkdirSync(ARCHIVE_DIR, { recursive: true });
+    const descriptions = loadDescriptions();
+    let totalIssues = 0;
+    let totalPublications = 0;
+
+    if (!fs.existsSync(DATA_DIR)) {
+      return res.json({
+        stats: { publications: 0, issues: 0 },
+        categories: DEFAULT_CATEGORIES.map((cat) => ({
+          category: cat,
+          publications: [],
+        })),
+      });
     }
 
-    const descriptions = loadDescriptions();
-    const existingDirs = getDirectories(ARCHIVE_DIR);
+    const existingFolders = fs
+      .readdirSync(DATA_DIR, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name);
 
-    // Spoji zadane kategorije s eventualnim dodatnim mapama na disku
-    const categoryNames = [...DEFAULT_CATEGORIES];
-    existingDirs.forEach((dir) => {
-      if (!categoryNames.some((c) => c.toUpperCase() === dir.toUpperCase())) {
-        categoryNames.push(dir);
-      }
-    });
+    const allCategories = [
+      ...new Set([...DEFAULT_CATEGORIES, ...existingFolders]),
+    ];
+    const archive = [];
 
-    let totalPublications = 0;
-    let totalIssues = 0;
-
-    const categories = categoryNames.map((catName) => {
-      // Pronađi stvarni naziv mape (bez obzira na velika/mala slova)
-      const actualCatDir =
-        existingDirs.find((d) => d.toUpperCase() === catName.toUpperCase()) ||
-        catName;
-      const catPath = path.join(ARCHIVE_DIR, actualCatDir);
-
-      if (!fs.existsSync(catPath)) {
-        return { category: catName, publications: [] };
-      }
-
-      const pubDirs = getDirectories(catPath);
-      const rootPdfs = getPdfFiles(catPath);
+    for (const catName of allCategories) {
+      const catPath = path.join(DATA_DIR, catName);
       const publications = [];
 
-      // 1. Slučaj: PDF-ovi su spremljeni direktno u mapi kategorije (npr. GODIŠNJACI/*.pdf)
-      if (rootPdfs.length > 0) {
-        totalPublications += 1;
-        totalIssues += rootPdfs.length;
-        publications.push({
-          name: actualCatDir,
-          years: ["Svi brojevi"],
-          info: findDescriptionForPub(actualCatDir, descriptions),
-        });
+      if (fs.existsSync(catPath) && fs.statSync(catPath).isDirectory()) {
+        if (FLAT_CATEGORIES.includes(catName)) {
+          const pdfFiles = fs
+            .readdirSync(catPath, { withFileTypes: true })
+            .filter((dirent) => dirent.isFile() && /\.pdf$/i.test(dirent.name));
+
+          if (pdfFiles.length > 0) {
+            totalIssues += pdfFiles.length;
+            totalPublications += 1;
+            publications.push({
+              name: catName,
+              years: [FLAT_PLACEHOLDER],
+              info: findDescription(catName, descriptions),
+            });
+          }
+        } else {
+          const pubFolders = fs
+            .readdirSync(catPath, { withFileTypes: true })
+            .filter((dirent) => dirent.isDirectory())
+            .map((dirent) => dirent.name);
+
+          for (const pubName of pubFolders) {
+            const pubPath = path.join(catPath, pubName);
+            const yearFolders = fs
+              .readdirSync(pubPath, { withFileTypes: true })
+              .filter((dirent) => dirent.isDirectory())
+              .map((dirent) => dirent.name);
+
+            // Prebroji PDF-ove po godinama za statistiku
+            yearFolders.forEach((y) => {
+              const yPath = path.join(pubPath, y);
+              const count = fs
+                .readdirSync(yPath)
+                .filter((f) => /\.pdf$/i.test(f)).length;
+              totalIssues += count;
+            });
+
+            totalPublications += 1;
+            publications.push({
+              name: pubName,
+              years: yearFolders.sort((a, b) => parseInt(a) - parseInt(b)),
+              info: findDescription(pubName, descriptions),
+            });
+          }
+        }
       }
 
-      // 2. Slučaj: Publikacije imaju vlastite podmape (npr. NOVINE/Naša sloga/...)
-      pubDirs.forEach((pubName) => {
-        const pubPath = path.join(catPath, pubName);
-        const yearDirs = getDirectories(pubPath);
-        const directPdfs = getPdfFiles(pubPath);
-
-        const years = [];
-        if (yearDirs.length > 0) {
-          yearDirs.forEach((year) => {
-            const pdfCount = getPdfFiles(path.join(pubPath, year)).length;
-            if (pdfCount > 0) {
-              years.push(year);
-              totalIssues += pdfCount;
-            }
-          });
-        }
-
-        if (directPdfs.length > 0) {
-          years.unshift("Svi brojevi");
-          totalIssues += directPdfs.length;
-        }
-
-        if (years.length > 0) {
-          totalPublications += 1;
-          publications.push({
-            name: pubName,
-            years,
-            info: findDescriptionForPub(pubName, descriptions),
-          });
-        }
+      archive.push({
+        category: catName,
+        publications: publications,
       });
-
-      return {
-        category: actualCatDir,
-        publications,
-      };
-    });
+    }
 
     res.json({
-      categories,
       stats: {
         publications: totalPublications,
         issues: totalIssues,
       },
+      categories: archive,
     });
-  } catch (err) {
-    console.error("Greška u /api/archive:", err);
-    res.status(500).json({ error: "Greška pri čitanju arhive." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Greška na serveru." });
   }
 });
 
-// API: Dohvat svih PDF brojeva za odabranu kategoriju, publikaciju i godinu
+// API: Dohvati brojeve za odabranu kategoriju, publikaciju i godinu
 app.get("/api/archive/:category/:publication/:year", (req, res) => {
+  const { category, publication, year } = req.params;
+  const isFlat =
+    FLAT_CATEGORIES.includes(category) && year === FLAT_PLACEHOLDER;
+
+  const targetPath = isFlat
+    ? path.join(DATA_DIR, category)
+    : path.join(DATA_DIR, category, publication, year);
+
   try {
-    const { category, publication, year } = req.params;
+    if (!fs.existsSync(targetPath)) return res.json([]);
 
-    // Odredi stvarnu putanju na disku ovisno o strukturi mapa
-    let targetDir;
-    let urlSegments;
+    const files = fs
+      .readdirSync(targetPath, { withFileTypes: true })
+      .filter((dirent) => dirent.isFile() && /\.pdf$/i.test(dirent.name))
+      .map((dirent) => {
+        const url = isFlat
+          ? `/files/${encodeURIComponent(category)}/${encodeURIComponent(dirent.name)}`
+          : `/files/${encodeURIComponent(category)}/${encodeURIComponent(publication)}/${encodeURIComponent(year)}/${encodeURIComponent(dirent.name)}`;
 
-    if (category === publication && year === "Svi brojevi") {
-      targetDir = path.join(ARCHIVE_DIR, category);
-      urlSegments = [category];
-    } else if (year === "Svi brojevi") {
-      targetDir = path.join(ARCHIVE_DIR, category, publication);
-      urlSegments = [category, publication];
-    } else {
-      targetDir = path.join(ARCHIVE_DIR, category, publication, year);
-      urlSegments = [category, publication, year];
-    }
+        return {
+          name: dirent.name.replace(/(\.+pdf)+$/i, "").replace(/\.[^/.]+$/, ""),
+          url: url,
+        };
+      })
+      .sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { numeric: true }),
+      );
 
-    // Sigurnosna provjera protiv izlaska izvan ARCHIVE_DIR
-    const resolvedTarget = path.resolve(targetDir);
-    const resolvedArchive = path.resolve(ARCHIVE_DIR);
-    if (!resolvedTarget.startsWith(resolvedArchive)) {
-      return res.status(403).json({ error: "Zabranjen pristup putanji." });
-    }
-
-    const pdfFiles = getPdfFiles(targetDir);
-    const result = pdfFiles.map((file) => {
-      const encodedPath = [...urlSegments, file]
-        .map((seg) => encodeURIComponent(seg))
-        .join("/");
-
-      return {
-        // Uklanja isključivo nastavak .pdf (ne reže točke u kraticama poput "k. und k.")
-        name: file.replace(/\.pdf$/i, ""),
-        url: `/files/${encodedPath}`,
-      };
-    });
-
-    res.json(result);
-  } catch (err) {
-    console.error("Greška pri dohvaćanju PDF brojeva:", err);
-    res.status(500).json({ error: "Greška pri dohvaćanju brojeva." });
+    res.json(files);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Greška na serveru." });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`INO server je pokrenut na: http://localhost:${PORT}`);
-  console.log(`Mapa s arhivskom građom: ${ARCHIVE_DIR}`);
-});
+app.listen(PORT, () =>
+  console.log(`INO Virtualna čitaonica radi na http://localhost:${PORT}`),
+);

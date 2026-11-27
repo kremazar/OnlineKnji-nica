@@ -1,0 +1,586 @@
+:root {
+  --primary: #1a365d;
+  --primary-dark: #102442;
+  --accent: #b0823e;
+  --accent-hover: #966c2e;
+  --bg-body: #f4f6f9;
+  --bg-card: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Zaglavlje i Navigacija (kao na ino.com.hr) */
+header {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
+  color: #ffffff;
+  border-bottom: 4px solid var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+.top-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(16, 36, 66, 0.6);
+}
+
+.top-bar-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.controls-grid.compact {
+  grid-template-columns: 1fr auto;
+}
+.brand-logo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.brand-logo span {
+  background: var(--accent);
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+nav button {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+nav button:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+nav button.active {
+  color: #ffffff;
+  background: var(--accent);
+  font-weight: 600;
+}
+
+.hero-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.institution-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e2c08d;
+  margin-bottom: 0.5rem;
+}
+
+.hero-inner h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.hero-inner p {
+  color: #cbd5e1;
+  font-size: 1rem;
+  max-width: 720px;
+}
+
+/* Glavni sadržaj i sekcije */
+main {
+  max-width: 1140px;
+  width: 100%;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  flex: 1;
+}
+
+.view-section {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+
+.view-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-header {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 2.2rem auto;
+}
+
+.section-header h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.85rem;
+  color: var(--primary);
+  margin-bottom: 0.6rem;
+}
+
+.section-header hr {
+  width: 60px;
+  height: 3px;
+  background: var(--accent);
+  border: none;
+  margin: 0.8rem auto 1rem auto;
+}
+
+.section-header p {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+}
+
+/* 4 uvodna bloka (O projektu, Građa, Pretraživanje, Kontakt) */
+.info-boxes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.info-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.info-box:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.info-box h3 {
+  color: var(--primary);
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+
+.info-box p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+
+.btn-outline {
+  align-self: flex-start;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* Statistika traka (kao na ino.com.hr) */
+.stats-bar {
+  background: var(--primary);
+  color: #ffffff;
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  margin-bottom: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.stat-number {
+  display: block;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #e2c08d;
+}
+
+.stat-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #cbd5e1;
+}
+
+/* Grid za 4 kategorije građe */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.category-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.category-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+.category-card.active {
+  border-color: var(--primary);
+  background: #f8fafc;
+  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.12);
+}
+
+.cat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(26, 54, 93, 0.08);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.category-card.active .cat-icon {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.cat-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+
+.cat-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Panel za preglednik + Popis naslova + Povijesni opis publikacije */
+.browser-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 2.5rem;
+}
+
+.panel-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.panel-header h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.45rem;
+  color: var(--primary);
+}
+
+/* Popis publikacija u 2 stupca (kao na ino.com.hr/digitalizirana-gradja/novine) */
+.pub-directory {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 0.6rem 2rem;
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.pub-directory-item {
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--primary);
+  font-size: 0.93rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.pub-directory-item:hover {
+  background: rgba(176, 130, 62, 0.12);
+  color: var(--accent-hover);
+}
+
+.pub-directory-item.selected {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+/* Povijesni tekst odabrane publikacije (kao na /digitalizirana-gradja/info/...) */
+.pub-info-box {
+  background: #fffdf9;
+  border: 1px solid #e9decb;
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.pub-info-box h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  color: var(--primary);
+  font-size: 1.25rem;
+  margin-bottom: 0.8rem;
+}
+
+.pub-info-box p {
+  font-size: 0.94rem;
+  color: #334155;
+  margin-bottom: 0.85rem;
+  text-align: justify;
+}
+
+.pub-info-box p:last-child {
+  margin-bottom: 0;
+}
+
+/* Kontrole za odabir */
+.controls-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 1.25rem;
+  align-items: end;
+}
+
+@media (max-width: 850px) {
+  .controls-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--text-main);
+  background-color: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.5rem;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+}
+
+select:disabled {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.btn-open {
+  background-color: var(--accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.78rem 1.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 45px;
+  white-space: nowrap;
+}
+
+.btn-open:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+.btn-open:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Tekstualne stranice (O projektu, Novosti, Kontakt) */
+.article-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.2rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+
+.article-card h3 {
+  color: var(--primary);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.35rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.article-card h3:first-child {
+  margin-top: 0;
+}
+.article-card p {
+  margin-bottom: 1rem;
+  color: #334155;
+}
+.article-card ul {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: #334155;
+}
+.article-card li {
+  margin-bottom: 0.4rem;
+}
+
+.empty-notice {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+footer {
+  background: var(--primary-dark);
+  color: #cbd5e1;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  font-size: 0.88rem;
+  border-top: 4px solid var(--accent);
+  margin-top: auto;
+}
+
+footer a {
+  color: #e2c08d;
+  text-decoration: none;
+}

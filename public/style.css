@@ -33,7 +33,7 @@ body {
   flex-direction: column;
 }
 
-/* Zaglavlje i Navigacija (kao na ino.com.hr) */
+/* Zaglavlje i Navigacija */
 header {
   background: linear-gradient(
     135deg,
@@ -60,9 +60,7 @@ header {
   flex-wrap: wrap;
   gap: 1rem;
 }
-.controls-grid.compact {
-  grid-template-columns: 1fr auto;
-}
+
 .brand-logo {
   font-family: "Playfair Display", Georgia, serif;
   font-size: 1.35rem;
@@ -257,7 +255,7 @@ main {
   color: #ffffff;
 }
 
-/* Statistika traka (kao na ino.com.hr) */
+/* Statistika traka */
 .stats-bar {
   background: var(--primary);
   color: #ffffff;
@@ -376,28 +374,31 @@ main {
   color: var(--primary);
 }
 
-/* Popis publikacija u 2 stupca (kao na ino.com.hr/digitalizirana-gradja/novine) */
+/* Popis publikacija u jednom redu s vertikalnim skrolanjem */
 .pub-directory {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 0.6rem 2rem;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+  max-height: 330px;
+  overflow-y: auto;
   margin-bottom: 2rem;
-  padding: 1.25rem;
+  padding: 1rem 1.25rem;
   background: #f8fafc;
   border-radius: 8px;
   border: 1px solid var(--border);
 }
 
 .pub-directory-item {
-  padding: 0.4rem 0.6rem;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.55rem 0.85rem;
   border-radius: 6px;
   cursor: pointer;
   color: var(--primary);
-  font-size: 0.93rem;
+  font-size: 0.94rem;
   font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   transition:
     background 0.15s,
     color 0.15s;
@@ -413,7 +414,26 @@ main {
   color: #ffffff;
 }
 
-/* Povijesni tekst odabrane publikacije (kao na /digitalizirana-gradja/info/...) */
+/* Traka za skrolanje (scrollbar) */
+.pub-directory::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pub-directory::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.pub-directory::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+}
+
+.pub-directory::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Povijesni tekst odabrane publikacije */
 .pub-info-box {
   background: #fffdf9;
   border: 1px solid #e9decb;
@@ -456,8 +476,13 @@ main {
   align-items: end;
 }
 
+.controls-grid.compact {
+  grid-template-columns: 1fr auto;
+}
+
 @media (max-width: 850px) {
-  .controls-grid {
+  .controls-grid,
+  .controls-grid.compact {
     grid-template-columns: 1fr;
   }
 }
@@ -522,6 +547,7 @@ select:disabled {
 .btn-open:hover:not(:disabled) {
   background-color: var(--accent-hover);
 }
+
 .btn-open:disabled {
   background-color: #cbd5e1;
   cursor: not-allowed;
@@ -548,15 +574,18 @@ select:disabled {
 .article-card h3:first-child {
   margin-top: 0;
 }
+
 .article-card p {
   margin-bottom: 1rem;
   color: #334155;
 }
+
 .article-card ul {
   margin-left: 1.5rem;
   margin-bottom: 1rem;
   color: #334155;
 }
+
 .article-card li {
   margin-bottom: 0.4rem;
 }
